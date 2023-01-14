@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import '../src/styles/index.scss';
 import Principal from './pages/principal';
 import reportWebVitals from './reportWebVitals';
 
+import '../src/styles/main.scss';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
