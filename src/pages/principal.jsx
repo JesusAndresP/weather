@@ -1,9 +1,10 @@
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button, Grid, MenuItem, Select, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { GetWeather } from "../services/climaService";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+
 
 function Principal() {
 
@@ -18,6 +19,7 @@ function Principal() {
   const [max, setMax] = useState();
   const [min, setMin] = useState();
   const [senTerm, setSenTerm] = useState();
+  const [iconCode, setIconCode] = useState();
   const [unit, setUnit] = useState('metric');
   const [city, setCity] = useState('Bogota');
 
@@ -25,8 +27,7 @@ function Principal() {
     setUnit(e.target.value);
   };
 
-  const onSubmitHandler = (data) =>{
-    console.log("HAND",data);
+  const onSubmitHandler = (data) => {
     setCity(data.city);
     reset();
   };
@@ -41,7 +42,8 @@ function Principal() {
         setMax(weatherService.data.main?.temp_max);
         setMin(weatherService.data.main?.temp_min);
         setSenTerm(weatherService.data.main?.feels_like);
-        if(city !== city){
+        setIconCode(weatherService.data.weather[0].icon);
+        if (city !== city) {
           fetchData();
         }
       }
@@ -65,35 +67,58 @@ function Principal() {
     unitLetter = 'K°';
   }
 
+  let iconurl = "http://openweathermap.org/img/w/" + iconCode + ".png";
+
   return (
-    <div className="principal">
-        <form onSubmit={handleSubmit(onSubmitHandler)}>
-          <TextField
+    <div>
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
+        <TextField
           id="city"
           name="city"
-          disableUnderline 
           placeholder="Bucar otra ciudad"
           helperText={errors.city?.message}
           onChange={(e) => setCity(e.target.value)}
           {...register("city")}
-          />
-          <Button variant="contained" type="submit">Buscar</Button>
-        </form>
-      
-        <Select
-          value={unit}
-          onChange={handleUnit}
-          hint="Unidad">
-          <MenuItem value={"standard"}>K°</MenuItem>
-          <MenuItem value={"metric"}>C°</MenuItem>
-          <MenuItem value={"imperial"}>F°</MenuItem>
-        </Select>
-      <h1>{name}</h1>
-      <h1>{temp}{unitLetter}</h1>
-      <h3>Humedad: {hum} %</h3>
-      <h3>Sensación termica: {senTerm}{unitLetter}</h3>
-      <h3>Temp máxima: {max}{unitLetter}</h3>
-      <h3>Temp minima: {min}{unitLetter}</h3>
+        />
+        <Button variant="contained" type="submit">Buscar</Button>
+      </form>
+
+      <Select
+        value={unit}
+        onChange={handleUnit}
+        hint="Unidad">
+        <MenuItem value={"standard"}>K°</MenuItem>
+        <MenuItem value={"metric"}>C°</MenuItem>
+        <MenuItem value={"imperial"}>F°</MenuItem>
+      </Select>
+
+      <Grid
+        container
+        spacing={1}
+        direction="row"
+        justifyContent="center"
+        alignItems="center">
+        <Grid className="section__weather"
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center">
+          <Grid item>
+            <p className="heading-primary">{name}</p>
+            <p className="heading-main">{temp}{unitLetter}</p>
+          </Grid >
+          <Grid item >
+            <img className="section__wicon" src={iconurl} alt="Weather icon" />
+          </Grid>
+        </Grid>
+      </Grid >
+      <p className="subHeading-primary">Máx.: {max}{unitLetter}</p>
+      <p className="subHeading-primary">Mín.: {min}{unitLetter}</p>
+
+      <section className="section__details">
+        <p>Humedad: {hum} %</p>
+        <p>Sensación termica: {senTerm}{unitLetter}</p>
+      </section>
     </div>
   );
 }
