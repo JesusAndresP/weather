@@ -1,4 +1,5 @@
-import { Button, Grid, MenuItem, Select, TextField } from "@mui/material";
+import { Button, Grid, IconButton, Input, InputAdornment, MenuItem, Select, TextField } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import React, { useEffect, useState } from "react";
 import { GetWeather } from "../services/climaService";
 import { useForm } from "react-hook-form";
@@ -71,26 +72,55 @@ function Principal() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
-        <TextField
-          id="city"
-          name="city"
-          placeholder="Bucar otra ciudad"
-          helperText={errors.city?.message}
-          onChange={(e) => setCity(e.target.value)}
-          {...register("city")}
-        />
-        <Button variant="contained" type="submit">Buscar</Button>
-      </form>
+      <Grid
+        container
+        spacing={1}
+        justifyContent="center"
+        alignItems="center"
+        direction="row" >
+        <form onSubmit={handleSubmit(onSubmitHandler)}>
+          <Input
+            autoFocus
+            sx={{
+              "& fieldset": { border: 'none' },
+              input: { color: '#757575' }
+            }}
+            id="city"
+            name="city"
+            className="input__search"
+            placeholder="Bucar otra ciudad"
+            disableUnderline
+            helperText={errors.city ? errors.city.message : ""}
+            onChange={(e) => setCity(e.target.value)}
+            {...register("city")}
 
-      <Select
-        value={unit}
-        onChange={handleUnit}
-        hint="Unidad">
-        <MenuItem value={"standard"}>K°</MenuItem>
-        <MenuItem value={"metric"}>C°</MenuItem>
-        <MenuItem value={"imperial"}>F°</MenuItem>
-      </Select>
+            FormHelperTextProps={{
+              style: {
+                margin: "-5px 0 1px 0px",
+                color: "#e52900",
+                fontSize: 10
+              },
+            }}
+            endAdornment={
+              <IconButton
+                type="submit"
+                color="#757575"
+              >
+                <SearchIcon />
+              </IconButton>
+            }
+          />
+        </form>
+
+        <Select
+          value={unit}
+          onChange={handleUnit}
+          hint="Unidad">
+          <MenuItem value={"standard"}>K°</MenuItem>
+          <MenuItem value={"metric"}>C°</MenuItem>
+          <MenuItem value={"imperial"}>F°</MenuItem>
+        </Select>
+      </Grid>
 
       <Grid
         container
@@ -105,19 +135,19 @@ function Principal() {
           alignItems="center">
           <Grid item>
             <p className="heading-primary">{name}</p>
-            <p className="heading-main">{temp}{unitLetter}</p>
+            <p className="heading-main">{parseInt(temp)} {unitLetter}</p>
           </Grid >
           <Grid item >
             <img className="section__wicon" src={iconurl} alt="Weather icon" />
           </Grid>
         </Grid>
       </Grid >
-      <p className="subHeading-primary">Máx.: {max}{unitLetter}</p>
-      <p className="subHeading-primary">Mín.: {min}{unitLetter}</p>
+      <p className="subHeading-primary">Máx.: {parseInt(max)} {unitLetter}</p>
+      <p className="subHeading-primary">Mín.: {parseInt(min)} {unitLetter}</p>
 
       <section className="section__details">
         <p>Humedad: {hum} %</p>
-        <p>Sensación termica: {senTerm}{unitLetter}</p>
+        <p>Sensación termica: {parseInt(senTerm)}{unitLetter}</p>
       </section>
     </div>
   );
